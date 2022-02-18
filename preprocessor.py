@@ -1,10 +1,11 @@
-"""Author: Zhentao Huang (Github link for this assignment: https://github.com/ZhentaoHuang/CIS-6190-Assignment-1)
+"""Author: Zhentao Huang (Github link for this assignment: https://github.com/ZhentaoHuang/CIS-6190-Assignment-2)
 This file is used to Perform the preprocessing task. Type -h for help.
 """
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
-from tokenization import scan, t_error
 import argparse
+import re
+import string
 
 
 
@@ -26,26 +27,31 @@ def preproc(input, output):
 
     lines = input.readlines()
     ps = PorterStemmer()
+    numbers = re.compile(r"[+|-]?\d+(\.\d+)?") # Integers and real numbers, with possible positive and negative signs
 
     count = 0
     for line in lines:
+
         value_list = []
-        
-        if count == 10:
-            break
+        words = line[:-1].split(" ")
+        # Check for the label
+        if words[0] in ["$DOC", "$TITLE", "$TEXT"]:
+            value_list.append(line[:-1])
+            
+        else:
+            
+            for word in words:
+                match = numbers.match(word)  # Remove all the numbers
+                if match is None and word not in string.punctuation:    # Remove the punctuation
+                    if word not in stopwords.words("english"):  # Remove the stopwords
 
-        token_list = scan(line[:-1]) # The scan function is taken from Assignment 1, it returns the token list of the line.
-        for tok in token_list:
-
-            if tok.type != "PUNCTUATION" and tok.type != "DELIMITERS" and tok.type != "NUMBER": # Remove the PUNCTUATION, DELIMITERS and NUMBER
-                if not tok.value in stopwords.words():  # Remove the stopwords. Inspired by the sample program.
-                    if tok.type == "LABEL":
-                        value_list.append(tok.value)
-                    else:
-                        value_list.append(ps.stem(tok.value.lower()))   # First lowercase the words then convert them into their stems. Inspired by the sample program.
+                        value_list.append(ps.stem(word.lower()))    # Lowercase and Stemming
 
         output.write(' '.join(value_list) + '\n')	# Write the ouput to the file based on value_list
+        if (count % 5000 == 0):
+            print(str(count) + " Line Processed")
         count = count + 1
+
 
     
 def arg_parse():
@@ -59,7 +65,7 @@ def arg_parse():
     parser = argparse.ArgumentParser()
     
     # Adding optional argument
-    parser.add_argument("-i", "--Input", default="samples.splitted", help = "The input file (default: samples.splitted)")
+    parser.add_argument("-i", "--Input", default="samples.tokenized", help = "The input file (default: samples.splitted)")
     parser.add_argument("-o", "--Output", default="samples.processed", help = "The output file (default: samples.processed)")
     
     # Read arguments from command line

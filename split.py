@@ -21,7 +21,7 @@ def split(infile, outfile):
             #if the first char in the line is "$", then the line is a label
             
             if len(section) == 0:
-                #if there is no lines in the "section" then write the current label
+                #if therie is no lines in the "secton" then write the current label
                 outfile.write(line)
                 next
             else:
