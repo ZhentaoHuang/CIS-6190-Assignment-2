@@ -10,7 +10,7 @@ Test Environment: Python 3.7.2 linux.socs.uoguelph.ca
   * ## Usage
   ```python preprocessor.py --Input YourInputFile --Output YourOutputFile```
 
-  The input is set to documents.tokenized, and the output is set to documents.processes in default. The program should print out the progress every 5,000 lines of documents.
+  The input is set to documents_small.tokenized, and the output is set to documents_small.processes in default. The program should print out the progress every 5,000 lines of documents.
 
   * ## Objectives
   The goal is to perform 4 processing tasks:
@@ -20,34 +20,27 @@ Test Environment: Python 3.7.2 linux.socs.uoguelph.ca
   4. Stemming: convert the remaining words to their stems.
   
   * ## Test Plan
-  The test cases are added at the top of documents.tokenized file. Such as "ComPuting" or "cOMPuter". Please check the file for full details.
+  The test cases are added at the top of documents_small.tokenized file. Such as "ComPuting" or "cOMPuter". Please check the file for full details.
 
 * # 2. Offline Processing
   * ## Usage
   ```python indexer.py --Input YourInputFile --Dictionary YourOutputDictionaryFile --Postings YourOutputPostingsFile --Docids YourOutputDocidsFile```
 
-  The input is set to samples.splitted, and the output is set to sample.tokenized in default.
+  The input is set to documents_small.preprocessed, and the output is set to dictionary.txt, postings.txt, docids.txt in default.
 
   * ## Objectives
-  The goal is to perform tokenization by scanner-generation tool Ply.lex. There are total seven categories: LABEL, WORD, NUMBER, APOSTROPHIZED, HYPHENATED, DELIMITER, and PUNCTUATION. After the tokenization, a post-processing would be applied for HYPHENATED, APOSTROPHIZED and WORD type to split certain type into sequence of tokens.
+  The goal is to take the preprocessed file as input and produce an inverted index with three outputfiles: dictionary.txt, postings.txt and docids.txt.
+  1. dictionary.txt: \<stem\> \<document-frequency\>
+  2. postings.txt: \<did\> \<tf\>
+  3. docids.txt \<docid\> \<title\> \<start-line-number\>
   
-  * ## Test Plan
-  The test cases are added at the top of sample.txt file. Such as "this-is-just-a-test's" or "-123abc". Please check the file for full details.
-
-* # 3. POS-Tagging
+  
+* # 3. Online Processing
   * ## Usage
-  ```python pos-tag.py --Input YourInputFile --Output YourOutputFile```
+  ```python retriever.py --Dictionary YourInputDictionaryFile --Postings YourInputPostingsFile --Docids YourInputDocidsFile```
 
-  The input is set to samples.tokenized, and the output is set to sample.tagged in default.
+  The input is set to dictionary.txt, postings.txt, docids.txt in default.
 
   * ## Objectives
-  The goal of this program is to apply POS-tagger in NLTK to tag the words with their POS tags. All the output tokens are paired up with their POS tags
+  The goal of this program is to load the inverted files from the offline processing into memory and then ask for user's query iteratively. Then search for the top-10 relative documents based on tf.idf and inner products.
 
-* # 4. Data Analysis
-  * ## Usage
-  ```python data-analysis.py --Input YourInputFile --Output YourOutputFile```
-
-  The input is set to samples.tagged, and the output is set to sample.analysis in default.
-
-  * ## Objectives
-  The goal of this program is to analysis the tagged file and generate a summary file. The file indicates: the total amount of documents, the min, avg and max document lengths by the number os sentences/tokens, the average sentence lengths by the number of tokens for the whole data collection as well as all individual documents, etc.
