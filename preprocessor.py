@@ -65,8 +65,8 @@ def arg_parse():
     parser = argparse.ArgumentParser()
     
     # Adding optional argument
-    parser.add_argument("-i", "--Input", default="samples.tokenized", help = "The input file (default: samples.splitted)")
-    parser.add_argument("-o", "--Output", default="samples.processed", help = "The output file (default: samples.processed)")
+    parser.add_argument("-i", "--Input", default="documents_small.tokenized", help = "The input file (default: documents_small.tokenized)")
+    parser.add_argument("-o", "--Output", default="documents_small.processed", help = "The output file (default: documents_small.processed)")
     
     # Read arguments from command line
     args = parser.parse_args()

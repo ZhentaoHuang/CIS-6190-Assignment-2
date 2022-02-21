@@ -139,7 +139,7 @@ def arg_parse():
     parser = argparse.ArgumentParser()
     
     # Adding optional argument
-    parser.add_argument("-i", "--Input", default="samples.processed", help = "The input file (default: samples.splitted)")
+    parser.add_argument("-i", "--Input", default="documents_small.processed", help = "The input file (default: documents_small.splitted)")
     parser.add_argument("-d", "--Dictionary", default="dictionary.txt", help = "The output file (default: dictionary.txt)")
     parser.add_argument("-p", "--Postings", default="postings.txt", help = "The output file (default: postings.txt)")
     parser.add_argument("-s", "--Docids", default="docids.txt", help = "The output file (default: docids.txt)")
